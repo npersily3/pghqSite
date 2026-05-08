@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PGHQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --cream:      #F5F0E6;
+      --brown-deep: #1E130C;
+      --brown-mid:  #4A3020;
+      --terra:      #8B3A2A;
+      --ochre:      #C8973A;
+      --sand:       #D6C9AA;
+      --line:       1px solid var(--brown-mid);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--brown-deep);
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ─────────────────────────────────────── */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 56px;
+      background: var(--cream);
+      border-bottom: var(--line);
+    }
+
+    .logo {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 200;
+      font-size: 1rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--brown-deep);
+    }
+
+    .header-rule {
+      width: 40px;
+      height: 2px;
+      background: var(--terra);
+    }
+
+    /* ── HERO ────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      padding-top: 56px;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      position: relative;
+    }
+
+    /* Vertical rule left */
+    .hero::before {
+      content: '';
+      position: absolute;
+      left: 3rem;
+      top: 56px;
+      bottom: 0;
+      width: 1px;
+      background: var(--brown-mid);
+      opacity: 0.35;
+    }
+
+    /* Vertical rule right */
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: 3rem;
+      top: 56px;
+      bottom: 0;
+      width: 1px;
+      background: var(--brown-mid);
+      opacity: 0.35;
+    }
+
+    .hero-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 5rem 6rem 3rem;
+      gap: 2.5rem;
+    }
+
+    /* FLW geometric frame around image */
+    .image-frame {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .image-frame::before,
+    .image-frame::after {
+      content: '';
+      position: absolute;
+      border: 2px solid var(--terra);
+    }
+
+    .image-frame::before {
+      inset: -10px -10px auto auto; /* top-right corner */
+      width: 40px;
+      height: 40px;
+      border-bottom: none;
+      border-left: none;
+    }
+
+    .image-frame::after {
+      inset: auto auto -10px -10px; /* bottom-left corner */
+      width: 40px;
+      height: 40px;
+      border-top: none;
+      border-right: none;
+    }
+
+    .corner-tl,
+    .corner-br {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--ochre);
+    }
+
+    .corner-tl {
+      top: -10px;
+      left: -10px;
+      border-bottom: none;
+      border-right: none;
+    }
+
+    .corner-br {
+      bottom: -10px;
+      right: -10px;
+      border-top: none;
+      border-left: none;
+    }
+
+    .hero-img {
+      display: block;
+      max-width: min(520px, 72vw);
+      max-height: 60vh;
+      object-fit: cover;
+      filter: sepia(12%) contrast(1.04);
+      box-shadow: 8px 8px 0 var(--sand), 9px 9px 0 var(--brown-mid);
+    }
+
+    .hero-title {
+      text-align: center;
+    }
+
+    .hero-title h1 {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 200;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      letter-spacing: 0.3em;
+      color: var(--brown-deep);
+      line-height: 1.1;
+    }
+
+    .hero-title .sub {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(0.9rem, 1.8vw, 1.2rem);
+      letter-spacing: 0.2em;
+      color: var(--terra);
+      margin-top: 0.6rem;
+    }
+
+    /* Horizontal band — FLW prairie strip */
+    .hero-band {
+      height: 6px;
+      background: linear-gradient(to right,
+        var(--brown-deep) 0%,
+        var(--brown-deep) 25%,
+        var(--terra)      25%,
+        var(--terra)      50%,
+        var(--ochre)      50%,
+        var(--ochre)      75%,
+        var(--sand)       75%,
+        var(--sand)       100%
+      );
+    }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--brown-mid);
+      opacity: 0.7;
+    }
+
+    .scroll-hint span {
+      display: block;
+      width: 1px;
+      height: 40px;
+      background: var(--brown-mid);
+      animation: drop 1.6s ease-in-out infinite;
+    }
+
+    @keyframes drop {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      50%  { transform: scaleY(1); transform-origin: top; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ── EDITOR SECTION ──────────────────────────────── */
+    .editor-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 3rem;
+      background: var(--brown-deep);
+      position: relative;
+    }
+
+    /* Geometric grid overlay — FLW motif */
+    .editor-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--brown-mid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--brown-mid) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    .editor-wrap {
+      position: relative;
+      width: min(720px, 90vw);
+      opacity: 0;
+      transform: translateY(48px);
+      transition: opacity 0.8s cubic-bezier(.25,.8,.25,1),
+                  transform 0.8s cubic-bezier(.25,.8,.25,1);
+    }
+
+    .editor-wrap.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .editor-label {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 200;
+      font-size: 0.7rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--ochre);
+      margin-bottom: 1.2rem;
+    }
+
+    /* Horizontal decoration bar */
+    .editor-deco {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 1.6rem;
+    }
+
+    .deco-block {
+      height: 3px;
+    }
+
+    .deco-block:nth-child(1) { background: var(--terra);  width: 32px; }
+    .deco-block:nth-child(2) { background: var(--ochre);  width: 12px; }
+    .deco-block:nth-child(3) { background: var(--sand);   flex: 1; }
+
+    .editor-body {
+      min-height: 260px;
+      padding: 1.8rem 2rem;
+      background: var(--cream);
+      border: 2px solid var(--terra);
+      border-top: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: var(--brown-deep);
+      outline: none;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* FLW corner accent on editor box */
+    .editor-corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--ochre);
+    }
+
+    .editor-corner.tr {
+      top: -2px;
+      right: -2px;
+      border-bottom: none;
+      border-left: none;
+    }
+
+    .editor-corner.bl {
+      bottom: -2px;
+      left: -2px;
+      border-top: none;
+      border-right: none;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────── */
+    footer {
+      height: 56px;
+      background: var(--brown-deep);
+      border-top: 3px solid var(--terra);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    footer p {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 200;
+      font-size: 0.65rem;
+      letter-spacing: 0.5em;
+      color: var(--sand);
+      opacity: 0.5;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">PGHQ</div>
+    <div class="header-rule"></div>
+    <div class="logo" style="font-size:0.7rem; opacity:0.5;">平和の本部</div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-center">
+      <div class="image-frame">
+        <div class="corner-tl"></div>
+        <div class="corner-br"></div>
+        <img class="hero-img" src="pgImage.jpg" alt="PGHQ" />
+      </div>
+
+      <div class="hero-title">
+        <h1>平和の本部</h1>
+        <span class="sub">Papa Genghis Headquarters &nbsp;·&nbsp; Est. 2025</span>
+      </div>
+    </div>
+
+    <div class="hero-band"></div>
+
+    <div class="scroll-hint">
+      Scroll
+      <span></span>
+    </div>
+  </section>
+
+  <section class="editor-section">
+    <div class="editor-wrap" id="editorWrap">
+      <div class="editor-label">Your Words</div>
+      <div class="editor-deco">
+        <div class="deco-block"></div>
+        <div class="deco-block"></div>
+        <div class="deco-block"></div>
+      </div>
+
+<div class="editor-body" id="editor">
+        <p>Hello Papa Genghis, what do you think, if you see this respond with a Borat reference</p>
+      </div>
+
+      <div class="editor-corner tr"></div>
+      <div class="editor-corner bl"></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>PGHQ &nbsp;·&nbsp; Inspired by Prairie &amp; Wa</p>
+  </footer>
+
+  <script>
+    const wrap = document.getElementById('editorWrap');
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) wrap.classList.add('visible'); },
+      { threshold: 0.15 }
+    );
+    observer.observe(wrap);
+  </script>
+</body>
+</html>
